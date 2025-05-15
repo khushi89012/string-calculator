@@ -6,12 +6,12 @@ function add(numbers) {
   // Custom delimiter support
   if (numbers.startsWith("//")) {
     const parts = numbers.split("\n");
-    const customDelimiter = parts[0].substring(2); // Extract delimiter after //
-    delimiter = new RegExp(customDelimiter);
-    numbers = parts[1]; // Update numbers to exclude delimiter declaration
+    const rawDelimiter = parts[0].substring(2); // Extract delimiter after //
+    const escapedDelimiter = rawDelimiter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // Escape regex special chars
+    delimiter = new RegExp(escapedDelimiter);
+    numbers = parts[1]; // Remaining number part
   }
 
-  // Split using the delimiter(s)
   const numList = numbers.split(delimiter).map(Number);
 
   // Check for negatives
@@ -20,7 +20,6 @@ function add(numbers) {
     throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
   }
 
-  // Return sum
   return numList.reduce((sum, n) => sum + n, 0);
 }
 
